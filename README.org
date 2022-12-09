@@ -1,0 +1,3 @@
+* Emerit
+
+You write shell command down, then make emacs run it.
