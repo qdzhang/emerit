@@ -103,11 +103,14 @@ If SUDO-P is t, call the function in `/sudo::/' tramp."
   `(defun ,(intern (concat "emerit--run-" exec)) ()
      ,(format "Run the %s exec with args %s." exec args)
      (interactive)
-     (when ,sudo-p
-       (cd "/sudo::/"))
-     (make-process :name (concat "run-" ,exec)
-                   :buffer (concat "*run-" ,exec "-buffer*")
-                   :command (cons ,exec ',args))))
+     (with-temp-buffer
+       (when ,sudo-p
+         (setq default-directory "/sudo::/"))
+       (make-process :name (concat "run-" ,exec)
+                     :buffer (concat "*run-" ,exec "-buffer*")
+                     :command (cons ,exec ',args)
+                     :file-handler (find-file-name-handler default-directory
+                                                           'make-process)))))
 
 ;;;###autoload
 (defun emerit-run-select-command ()
