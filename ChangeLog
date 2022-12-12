@@ -1,0 +1,19 @@
+2022-12-12  qdzhang  <qdzhangcn@gmail.com>
+
+	* emerit.el (emerit--run-get-all-functions): Add a index number to
+	the selected command name, such that to select same program that
+	with different args.
+
+	* LICENSE: Add license.
+
+2022-12-10  qdzhang  <qdzhangcn@gmail.com>
+
+	* emerit.el (emerit--run): Add `:file-handler` argument in
+	`make-process`, to make the sudo commands run correctly.
+
+2022-12-09  qdzhang  <qdzhangcn@gmail.com>
+
+	Init commit.
+
+	* emerit.el
+	* README.org
