@@ -1,3 +1,9 @@
+2022-12-13  qdzhang  <qdzhangcn@gmail.com>
+
+	* emerit.el (emerit--run): Use a index numeber as the suffix of
+	the actual function name, such that to make different shell
+	command corresponding to different function.
+
 2022-12-12  qdzhang  <qdzhangcn@gmail.com>
 
 	* emerit.el (emerit--run-get-all-functions): Add a index number to

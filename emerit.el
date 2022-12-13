@@ -76,8 +76,9 @@
   (dolist (cmd emerit--shell-cands)
     (let ((sudo-p (plist-get cmd :sudo))
           (program (plist-get cmd :exec))
-          (args (plist-get cmd :args)))
-      (eval `(emerit--run ,program ,args ,sudo-p)))))
+          (args (plist-get cmd :args))
+          (pos (emerit--nth-elt cmd emerit--shell-cands)))
+      (eval `(emerit--run ,program ,args ,sudo-p ,pos)))))
 
 (defun emerit--nth-elt (elem xs)
   "Return zero-indexed position of ELEM in list XS, or nil if absent."
@@ -99,7 +100,7 @@
            (annot (concat " " program " " (if (length> args-string 30)
                                               (substring args-string 0 29)
                                             args-string)))
-           (func-name (concat "emerit--run-" program)))
+           (func-name (concat "emerit--run-" program "-" (number-to-string pos))))
       (setq emerit--run-funcs-list (cons `(,(concat program "(" (number-to-string pos) ")") . ,func-name) emerit--run-funcs-list))
       (setq emerit--run-funcs-annots (cons `(,(concat program "(" (number-to-string pos) ")") . ,annot) emerit--run-funcs-annots)))))
 
@@ -108,17 +109,17 @@
   (cdr (assoc candidate emerit--run-funcs-annots)))
 
 
-(defmacro emerit--run (exec args sudo-p)
+(defmacro emerit--run (exec args sudo-p name-index)
   "Return a named function that runs EXEC with ARGS.
 If SUDO-P is t, call the function in `/sudo::/' tramp."
-  `(defun ,(intern (concat "emerit--run-" exec)) ()
+  `(defun ,(intern (concat "emerit--run-" exec "-" (number-to-string name-index))) ()
      ,(format "Run the %s exec with args %s." exec args)
      (interactive)
      (with-temp-buffer
        (when ,sudo-p
          (setq default-directory "/sudo::/"))
        (make-process :name (concat "run-" ,exec)
-                     :buffer (concat "*run-" ,exec "-buffer*")
+                     :buffer (concat "*run-" ,exec "-" ,(number-to-string name-index) "-buffer*")
                      :command (cons ,exec ',args)
                      :file-handler (find-file-name-handler default-directory
                                                            'make-process)))))
